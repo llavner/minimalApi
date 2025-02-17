@@ -91,14 +91,14 @@ app.MapPost("/categories", (Category cat) => {
         return Results.BadRequest($"CatId: {cat.Id} is occupied, use another Id.");
     
     categories.Add(cat);
-    return Results.Created($"/users/{cat.Id}", cat);
+    return Results.Created($"/categories/{cat.Id}", cat);
 });
 app.MapPut("/categories", (int id, Category catToUpdate) => 
 {
     var cat = categories.FirstOrDefault(c => c.Id == id);
     if (cat is null)
     {
-        return Results.NotFound($"Unable to find user with ID: {id}.");
+        return Results.NotFound($"Unable to find category with ID: {id}.");
     }
 
     cat.Name = catToUpdate.Name;
@@ -111,7 +111,7 @@ app.MapDelete("/categories", (int id) =>
 
     if (cat is null)
     {
-        return Results.NotFound($"Unable to find user with ID: {id}.");
+        return Results.NotFound($"Unable to find category with ID: {id}.");
     }
 
     categories.Remove(cat);
