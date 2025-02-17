@@ -44,6 +44,32 @@ app.MapPost("/users", (User user) => {
     return Results.Created($"/users/{user.Id}", user);
 });
 
+app.MapPut("/users", (int id, User userToUpdate) => 
+{
+    var user = users.FirstOrDefault(u => u.Id == id);
+    if (user is null)
+    {
+        return Results.NotFound($"Unable to find user with ID: {id}.");
+    }
+
+    user.Name = userToUpdate.Name;
+    return Results.Ok(user);
+
+});
+
+app.MapDelete("/users", (int id) => 
+{
+    var user = users.FirstOrDefault(u => u.Id == id);
+
+    if (user is null)
+    {
+        return Results.NotFound($"Unable to find user with ID: {id}.");
+    }
+
+    users.Remove(user);
+    return Results.Ok("User deleted.");
+});
+
 
 // app.MapGet("/product", () => product);
 // app.MapGet("/order", () => order);
