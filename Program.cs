@@ -20,9 +20,7 @@ if (app.Environment.IsDevelopment())
         config.DocumentPath = "/swagger/{documentName}/swagger.json";
         config.DocExpansion = "list";
         });
-    }
-
-app.MapGet("/", () => "Hello World!");
+}
 
 var users = new List<User>() {
    new User {Id = 1, Name = "Anna"},
