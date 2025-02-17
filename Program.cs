@@ -65,12 +65,58 @@ app.MapDelete("/users", (int id) =>
     }
 
     users.Remove(user);
-    return Results.Ok("User deleted.");
+    return Results.Ok($"User {user.Name} deleted.");
 });
 
 
 // app.MapGet("/product", () => product);
 // app.MapGet("/order", () => order);
+
+var products = new List<Product>()
+{
+    new () { Id = 1, Name = "Computer", Price = "1800 €"},
+    new () { Id = 2, Name = "Smartphone", Price = "900 €"},
+    new () { Id = 3, Name = "Cardigan", Price = "60 €"},
+    new () { Id = 4, Name = "Socks", Price = "12 €"},
+    new () { Id = 5, Name = "CD", Price = "15 €"},
+};
+
+app.MapGet("/products", () => products);
+app.MapGet("/products/{id}", (int id) => {
+    var item = products.FirstOrDefault(i => i.Id == id);
+    return item is not null ? Results.Ok(item.Name) : Results.NotFound($"Unable to find product with ID: {id}.");
+});
+app.MapPost("/products", (Product item) => {
+    if (products.Any(i => i.Id == i.Id))
+        return Results.BadRequest($"ProductId: {item.Id} is occupied, use another Id.");
+    
+    products.Add(item);
+    return Results.Created($"/products/{item.Id}", item);
+});
+app.MapPut("/products", (int id, Product itemToUpdate) => 
+{
+    var item = products.FirstOrDefault(i => i.Id == id);
+    if (item is null)
+    {
+        return Results.NotFound($"Unable to find product with ID: {id}.");
+    }
+
+    item.Name = itemToUpdate.Name;
+    return Results.Ok(item);
+
+});
+app.MapDelete("/products", (int id) => 
+{
+    var item = products.FirstOrDefault(i => i.Id == id);
+
+    if (item is null)
+    {
+        return Results.NotFound($"Unable to find product with ID: {id}.");
+    }
+
+    products.Remove(item);
+    return Results.Ok($"Item {item.Name} deleted.");
+});
 
 
 // app.MapGet("/category", () => category);
@@ -78,7 +124,7 @@ var categories = new List<Category>()
 {
     new () { Id = 1, Name = "Electronics"},
     new () { Id = 2, Name = "Clothes"},
-    new () { Id = 3, Name =  "Books"},
+    new () { Id = 3, Name =  "Music"},
 };
 
 app.MapGet("/categories", () => categories);
@@ -115,7 +161,7 @@ app.MapDelete("/categories", (int id) =>
     }
 
     categories.Remove(cat);
-    return Results.Ok("Category deleted.");
+    return Results.Ok($"Category {cat.Name} deleted.");
 });
 
 app.Run();
